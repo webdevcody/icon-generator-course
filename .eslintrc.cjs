@@ -9,6 +9,9 @@ const config = {
       parserOptions: {
         project: "tsconfig.json",
       },
+      rules: {
+        "@typescript-eslint/no-misused-promises": "off",
+      },
     },
   ],
   parser: "@typescript-eslint/parser",

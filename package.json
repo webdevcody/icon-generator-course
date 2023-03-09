@@ -27,6 +27,7 @@
     "openai": "^3.2.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.43.5",
     "stripe": "^11.13.0",
     "superjson": "1.9.1",
     "zod": "^3.20.6"

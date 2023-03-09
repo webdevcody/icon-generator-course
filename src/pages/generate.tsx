@@ -8,6 +8,7 @@ import { Button } from "~/component/Button";
 import { FormGroup } from "~/component/FormGroup";
 import { Input } from "~/component/Input";
 import { api } from "~/utils/api";
+import { type SubmitHandler, useForm } from "react-hook-form";
 
 const colors = [
   "blue",
@@ -20,11 +21,18 @@ const colors = [
   "black",
 ];
 
+type GenerateForm = {
+  prompt: string;
+  color: string;
+};
+
 const GeneratePage: NextPage = () => {
-  const [form, setForm] = useState({
-    prompt: "",
-    color: "",
-  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<GenerateForm>();
+
   const [imageUrl, setImageUrl] = useState("");
 
   const generateIcon = api.generate.generateIcon.useMutation({
@@ -34,18 +42,9 @@ const GeneratePage: NextPage = () => {
     },
   });
 
-  function handleFormSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    generateIcon.mutate(form);
-  }
-
-  function updateForm(key: string) {
-    return function (e: React.ChangeEvent<HTMLInputElement>) {
-      setForm((prev) => ({
-        ...prev,
-        [key]: e.target.value,
-      }));
-    };
+  function handleFormSubmit(formData: GenerateForm) {
+    console.log("we are here");
+    generateIcon.mutate(formData);
   }
 
   return (
@@ -60,13 +59,16 @@ const GeneratePage: NextPage = () => {
         <p className="mb-12 text-2xl">
           Fill out the form below to start generating your icons.
         </p>
-        <form className="flex flex-col gap-4" onSubmit={handleFormSubmit}>
+        <form
+          className="flex flex-col gap-4"
+          onSubmit={handleSubmit(handleFormSubmit)}
+        >
           <h2 className="text-xl">
             1. Describe what your want your icon to look like.
           </h2>
           <FormGroup className="mb-12">
             <label>Prompt</label>
-            <Input value={form.prompt} onChange={updateForm("prompt")}></Input>
+            <Input {...register("prompt", { required: true })}></Input>
           </FormGroup>
 
           <h2 className="text-xl">2. Pick your icon color.</h2>
@@ -75,9 +77,7 @@ const GeneratePage: NextPage = () => {
               <label key={color} className="flex gap-2 text-2xl">
                 <input
                   type="radio"
-                  name="color"
-                  checked={color === form.color}
-                  onChange={() => setForm((prev) => ({ ...prev, color }))}
+                  {...register("color", { required: true })}
                 ></input>
                 {color}
               </label>
