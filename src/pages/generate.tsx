@@ -8,7 +8,7 @@ import { Button } from "~/component/Button";
 import { FormGroup } from "~/component/FormGroup";
 import { Input } from "~/component/Input";
 import { api } from "~/utils/api";
-import { type SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 const colors = [
   "blue",
@@ -43,7 +43,6 @@ const GeneratePage: NextPage = () => {
   });
 
   function handleFormSubmit(formData: GenerateForm) {
-    console.log("we are here");
     generateIcon.mutate(formData);
   }
 
@@ -69,6 +68,7 @@ const GeneratePage: NextPage = () => {
           <FormGroup className="mb-12">
             <label>Prompt</label>
             <Input {...register("prompt", { required: true })}></Input>
+            {errors.prompt && <span>You must type a prompt</span>}
           </FormGroup>
 
           <h2 className="text-xl">2. Pick your icon color.</h2>
@@ -77,11 +77,13 @@ const GeneratePage: NextPage = () => {
               <label key={color} className="flex gap-2 text-2xl">
                 <input
                   type="radio"
+                  value={color}
                   {...register("color", { required: true })}
                 ></input>
                 {color}
               </label>
             ))}
+            {errors.color && <span>You must select a color</span>}
           </FormGroup>
 
           <Button
