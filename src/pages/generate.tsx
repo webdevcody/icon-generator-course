@@ -20,23 +20,29 @@ const colors = [
   "black",
 ];
 
+const shapes = ["square", "circle", "rounded"];
+
 const GeneratePage: NextPage = () => {
   const [form, setForm] = useState({
     prompt: "",
     color: "",
+    shape: "",
+    numberOfIcons: "1",
   });
-  const [imageUrl, setImageUrl] = useState("");
+  const [imagesUrl, setImagesUrl] = useState<{ imageUrl: string }[]>([]);
 
   const generateIcon = api.generate.generateIcon.useMutation({
     onSuccess(data) {
-      if (!data.imageUrl) return;
-      setImageUrl(data.imageUrl);
+      setImagesUrl(data);
     },
   });
 
   function handleFormSubmit(e: React.FormEvent) {
     e.preventDefault();
-    generateIcon.mutate(form);
+    generateIcon.mutate({
+      ...form,
+      numberOfIcons: parseInt(form.numberOfIcons),
+    });
   }
 
   function updateForm(key: string) {
@@ -66,7 +72,11 @@ const GeneratePage: NextPage = () => {
           </h2>
           <FormGroup className="mb-12">
             <label>Prompt</label>
-            <Input value={form.prompt} onChange={updateForm("prompt")}></Input>
+            <Input
+              required
+              value={form.prompt}
+              onChange={updateForm("prompt")}
+            ></Input>
           </FormGroup>
 
           <h2 className="text-xl">2. Pick your icon color.</h2>
@@ -74,6 +84,7 @@ const GeneratePage: NextPage = () => {
             {colors.map((color) => (
               <label key={color} className="flex gap-2 text-2xl">
                 <input
+                  required
                   type="radio"
                   name="color"
                   checked={color === form.color}
@@ -84,6 +95,34 @@ const GeneratePage: NextPage = () => {
             ))}
           </FormGroup>
 
+          <h2 className="text-xl">3. Pick your icon shape.</h2>
+          <FormGroup className="mb-12 grid grid-cols-4">
+            {shapes.map((shape) => (
+              <label key={shape} className="flex gap-2 text-2xl">
+                <input
+                  required
+                  type="radio"
+                  name="shape"
+                  checked={shape === form.shape}
+                  onChange={() => setForm((prev) => ({ ...prev, shape }))}
+                ></input>
+                {shape}
+              </label>
+            ))}
+          </FormGroup>
+
+          <h2 className="text-xl">4. How many do you want.</h2>
+          <FormGroup className="mb-12">
+            <label>Number of icons</label>
+            <Input
+              inputMode="numeric"
+              pattern="[1-9]|10"
+              value={form.numberOfIcons}
+              required
+              onChange={updateForm("numberOfIcons")}
+            ></Input>
+          </FormGroup>
+
           <Button
             isLoading={generateIcon.isLoading}
             disabled={generateIcon.isLoading}
@@ -92,17 +131,20 @@ const GeneratePage: NextPage = () => {
           </Button>
         </form>
 
-        {imageUrl && (
+        {imagesUrl.length > 0 && (
           <>
             <h2 className="text-xl">Your Icons</h2>
             <section className="mb-12 grid grid-cols-4 gap-4">
-              <Image
-                src={imageUrl}
-                alt="an image of your generated prompt"
-                width="100"
-                height="100"
-                className="w-full"
-              />
+              {imagesUrl.map(({ imageUrl }) => (
+                <Image
+                  key={imageUrl}
+                  src={imageUrl}
+                  alt="an image of your generated prompt"
+                  width="512"
+                  height="512"
+                  className="w-full"
+                />
+              ))}
             </section>
           </>
         )}
