@@ -43,6 +43,7 @@ export const generateRouter = createTRPCRouter({
         prompt: z.string(),
         color: z.string(),
         shape: z.string(),
+        style: z.string(),
         numberOfIcons: z.number().min(1).max(10),
       })
     )
@@ -51,12 +52,12 @@ export const generateRouter = createTRPCRouter({
         where: {
           id: ctx.session.user.id,
           credits: {
-            gte: 1,
+            gte: input.numberOfIcons,
           },
         },
         data: {
           credits: {
-            decrement: 1,
+            decrement: input.numberOfIcons,
           },
         },
       });
@@ -68,7 +69,7 @@ export const generateRouter = createTRPCRouter({
         });
       }
 
-      const finalPrompt = `a modern ${input.shape} icon in ${input.color} of ${input.prompt}, 3d rendered, metallic material, shiny, minimialistic, high quality, trending on art station, unreal engine graphics quality`;
+      const finalPrompt = `a modern ${input.shape} icon in ${input.color} of ${input.prompt}, ${input.style}, minimialistic, high quality, trending on art station, unreal engine graphics quality`;
 
       const base64EncodedImages = await generateIcon(
         finalPrompt,
