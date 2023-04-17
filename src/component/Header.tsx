@@ -8,9 +8,11 @@ export function Header() {
   const session = useSession();
   const { buyCredits } = useBuyCredits();
 
-  const credits = api.user.getCredits.useQuery();
-
   const isLoggedIn = !!session.data;
+
+  const credits = api.user.getCredits.useQuery(undefined, {
+    enabled: isLoggedIn,
+  });
 
   return (
     <header className="dark:bg-gray-900">
