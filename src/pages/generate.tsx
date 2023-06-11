@@ -144,8 +144,7 @@ const GeneratePage: NextPage = () => {
           <FormGroup className="mb-12">
             <label>Number of icons</label>
             <Input
-              inputMode="numeric"
-              pattern="[1-9]|10"
+              type="number"
               value={form.numberOfIcons}
               required
               onChange={updateForm("numberOfIcons")}
