@@ -96,13 +96,13 @@ const GeneratePage: NextPage = () => {
           <FormGroup className="mb-12 grid grid-cols-4">
             {colors.map((color) => (
               <label key={color} className="flex gap-2 text-2xl">
-                <input
+                <Input
                   required
                   type="radio"
                   name="color"
                   checked={color === form.color}
                   onChange={() => setForm((prev) => ({ ...prev, color }))}
-                ></input>
+                ></Input>
                 {color}
               </label>
             ))}
@@ -112,13 +112,13 @@ const GeneratePage: NextPage = () => {
           <FormGroup className="mb-12 grid grid-cols-4">
             {shapes.map((shape) => (
               <label key={shape} className="flex gap-2 text-2xl">
-                <input
+                <Input
                   required
                   type="radio"
                   name="shape"
                   checked={shape === form.shape}
                   onChange={() => setForm((prev) => ({ ...prev, shape }))}
-                ></input>
+                ></Input>
                 {shape}
               </label>
             ))}
@@ -128,13 +128,13 @@ const GeneratePage: NextPage = () => {
           <FormGroup className="mb-12 grid grid-cols-4">
             {styles.map((style) => (
               <label key={style} className="flex gap-2 text-2xl">
-                <input
+                <Input
                   required
                   type="radio"
                   name="style"
                   checked={style === form.style}
                   onChange={() => setForm((prev) => ({ ...prev, style }))}
-                ></input>
+                ></Input>
                 {style}
               </label>
             ))}
@@ -144,8 +144,7 @@ const GeneratePage: NextPage = () => {
           <FormGroup className="mb-12">
             <label>Number of icons</label>
             <Input
-              inputMode="numeric"
-              pattern="[1-9]|10"
+              type="number"
               value={form.numberOfIcons}
               required
               onChange={updateForm("numberOfIcons")}
